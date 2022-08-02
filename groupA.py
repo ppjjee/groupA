@@ -10,6 +10,13 @@ from collections import Counter
 import uuid
 from itertools import chain
 from sftp import SFTP
+hide_menu = """
+<style>
+#MainMenu {
+    visibility:hidden;
+}
+</style>
+"""
 
 st.set_page_config(initial_sidebar_state="collapsed")
 
@@ -61,7 +68,8 @@ def home():
     header = st.container()
     with header:
         title = st.title('We recommend music that matches the image.')
-        
+        st.markdown(hide_menu, unsafe_allow_html = True)
+
         sh1 = st.container()
         with sh1:
             subheader1 = st.subheader('Informed Consent 📝')
@@ -151,6 +159,7 @@ def image_page(imgs, cb):
     st.title('Image to Music Retrieval')
     st.text("✔️ Please select an image! We recommend music that matches the selected image.")
     st.text("✔️ After selecting an image, please wait for a while until the next process.")
+    st.markdown(hide_menu, unsafe_allow_html = True)  
 
     save_path = st.experimental_get_query_params()['path'][0]
     # show imgs to be selected    
@@ -274,7 +283,7 @@ def image_page(imgs, cb):
                     st.button('NEXT', on_click=cb)
 
             else:
-                model_load_state.info(f"**No Image Clicked. Click One, Please.**")
+                model_load_state.info(f"**There is no image selected. Please select one image.**")
                 
                 
                 
@@ -400,7 +409,8 @@ def music_page(cb):
     st.subheader("Now, we recommend a music list that matches the image!")
     st.write('-----')
     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
-    
+    st.markdown(hide_menu, unsafe_allow_html = True)  
+
     for i in range(5):
         createAudio(str(random_all[i]) + '.mp3')
 
@@ -431,11 +441,12 @@ def survey_page():
     st.title('Image to Music Retrieval')
     st.subheader("please respond to the questionnaire consisting of 4 sections.")
     st.subheader("💪 You are almost there! 💪")
+    st.markdown(hide_menu, unsafe_allow_html = True)  
 
     survey = st.container()
     with survey:
         st.write('-----')
-        st.text("############## First Section ##############")
+        
         gender = st.radio(
             "What's your gender?",
             ('Male', 'Female', 'Non-binary/Third gender'))
@@ -454,7 +465,7 @@ def survey_page():
             ('Prefer not to disclose', 'American Indigenous (Alaskan Native / Native American)', 'Asian', 'Black', 'Latinx / Hispanic', 'Middle Eastern / North African', 'Pacific Islander', 'White / Caucasian', 'Multi Race / Ethnicity'))
         st.write('-----')
 
-        st.text("############## Second Section ##############")
+        
         satisfaction1 = st.radio(
             "I'm very satisfied with this image-music retrievel system.",
             ('Very satisfied', 'Satisfied', 'Neutral', 'Unsatisfied', 'Very unsatisfied'))
@@ -476,7 +487,7 @@ def survey_page():
             ('Strongly agree', 'Agree', 'Neutral', 'Disagree', 'Strongly disagree'))
         st.write('-----')
         
-        st.text("############## Third Section ##############")
+        
         ItU1 = st.radio(
             "I intend to use this image-music retrieval system in the future.",
             ('Strongly agree', 'Agree', 'Neutral', 'Disagree', 'Strongly disagree'))
@@ -494,7 +505,7 @@ def survey_page():
             ('Strongly agree', 'Agree', 'Neutral', 'Disagree', 'Strongly disagree'))
         st.write('-----')
         
-        st.text("############## Fourth Section ##############")
+        
         valence1 = st.radio(
             "After using this image music retrieval system, I feel that I have had a good experience.",
             ('Strongly agree', 'Agree', 'Neutral', 'Disagree', 'Strongly disagree'))
@@ -544,7 +555,7 @@ def survey_page():
 def final_page():
     st.balloons()
     st.title("Thank you for your participation!")
-           
+    st.markdown(hide_menu, unsafe_allow_html = True)         
 
                                                 
 # run the active page
