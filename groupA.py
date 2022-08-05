@@ -506,7 +506,7 @@ def music_page(cb):
     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
     st.markdown(hide_menu, unsafe_allow_html = True)
 
-    for i in range(5):
+    for i in range(3):
         createAudio(filename[i])
 
     st.write('-----')
