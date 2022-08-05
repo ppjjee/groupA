@@ -335,64 +335,161 @@ def TagLoad(path):
 
 
 
-def music_retrieval():
-    remoteFilePath = '/nas2/epark/mtg-jamendo-dataset/data/autotagging_moodtheme.tsv'
-    localFilePath = 'autotagging_moodtheme.tsv'
-    sftp.download(remoteFilePath, localFilePath)
-    tracks, tags, extra = commons.read_file(localFilePath)
+# def music_retrieval():
+#     remoteFilePath = '/nas2/epark/mtg-jamendo-dataset/data/autotagging_moodtheme.tsv'
+#     localFilePath = 'autotagging_moodtheme.tsv'
+#     sftp.download(remoteFilePath, localFilePath)
+#     tracks, tags, extra = commons.read_file(localFilePath)
 
-    find_tag_list = []
-    save_path = st.experimental_get_query_params()['path'][0]
-    print("save path: " + save_path)
-    music_tag = TagLoad(save_path)
-    for i in music_tag:
-        p = tags['mood/theme'][i]
-        q = list(p)
-        find_tag_list.extend(q)
-        print('find_tag_list', find_tag_list)
+#     find_tag_list = []
+#     save_path = st.experimental_get_query_params()['path'][0]
+#     print("save path: " + save_path)
+#     music_tag = TagLoad(save_path)
+#     for i in music_tag:
+#         p = tags['mood/theme'][i]
+#         q = list(p)
+#         find_tag_list.extend(q)
+#         print('find_tag_list', find_tag_list)
         
-    if len(find_tag_list) == 3:
-        a, b, c = find_tag_list
-        elements_in_all = list(set.intersection(*map(set, [a, b, c])))
-        elements_in_two = list(set.intersection(*map(set, [a, b])))
-        elements_in_two_2nd = list(set.intersection(*map(set, [b, c])))
-        elements_in_two_3rd = list(set.intersection(*map(set, [a, b])))
-        elements_in_one = a
+#     if len(find_tag_list) == 3:
+#         a, b, c = find_tag_list
+#         elements_in_all = list(set.intersection(*map(set, [a, b, c])))
+#         elements_in_two = list(set.intersection(*map(set, [a, b])))
+#         elements_in_two_2nd = list(set.intersection(*map(set, [b, c])))
+#         elements_in_two_3rd = list(set.intersection(*map(set, [a, b])))
+#         elements_in_one = a
         
-        if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
-            random_all = random.choices(elements_in_all, k=5)
-        elif len(elements_in_all) == 0 and len(elements_in_two) != 0  and len(elements_in_two) >= 5:
-            random_all = random.choices(elements_in_two, k=5)
-        elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) >= 5:
-            random_all = random.choices(elements_in_two_2nd, k=5)
-        elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) ==0 and len(elements_in_two_3rd) >=5:
-            random_all = random.choices(elements_in_two_3rd, k=5)
-        else:
-            random_all = random.choices(elements_in_one, k=5)
-
-        
-    elif len(find_tag_list) == 2:
-        a, b = find_tag_list
-        elements_in_all = list(set.intersection(*map(set, [a, b])))
-        elements_in_one = a
-        elements_in_one_2nd = b
-        
-        if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
-            random_all = random.choices(elements_in_all, k=5)
-        elif len(elements_in_all) == 0 and len(elements_in_one) >= 5:
-            random_all = random.choices(elements_in_one_2nd, k=5)
-        else: 
-            random_all = random.choices(elements_in_one, k=5)
+#         if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
+#             random_all = random.choices(elements_in_all, k=5)
+#         elif len(elements_in_all) == 0 and len(elements_in_two) != 0  and len(elements_in_two) >= 5:
+#             random_all = random.choices(elements_in_two, k=5)
+#         elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) >= 5:
+#             random_all = random.choices(elements_in_two_2nd, k=5)
+#         elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) ==0 and len(elements_in_two_3rd) >=5:
+#             random_all = random.choices(elements_in_two_3rd, k=5)
+#         else:
+#             random_all = random.choices(elements_in_one, k=5)
 
         
-    else:
-        a = find_tag_list
-        elements_in_all = a
-        random_all = random.choices(elements_in_all, k=5)
-        music_tags = st.container()
+#     elif len(find_tag_list) == 2:
+#         a, b = find_tag_list
+#         elements_in_all = list(set.intersection(*map(set, [a, b])))
+#         elements_in_one = a
+#         elements_in_one_2nd = b
+        
+#         if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
+#             random_all = random.choices(elements_in_all, k=5)
+#         elif len(elements_in_all) == 0 and len(elements_in_one) >= 5:
+#             random_all = random.choices(elements_in_one_2nd, k=5)
+#         else: 
+#             random_all = random.choices(elements_in_one, k=5)
 
-    return random_all, save_path
+        
+#     else:
+#         a = find_tag_list
+#         elements_in_all = a
+#         random_all = random.choices(elements_in_all, k=5)
+#         music_tags = st.container()
+
+#     return random_all, save_path
     
+# def createAudio(filename):
+#     remoteFilePath = sftp.dirRemoteMusicData + '/' + filename
+#     localFilePath = sftp.dirMusic + '/' + filename
+#     sftp.download(remoteFilePath, localFilePath)
+#     audio_file = open(localFilePath, 'rb')
+#     audio_bytes = audio_file.read()
+#     st.audio(audio_bytes, format='audio/ogg', start_time=0)
+
+# ## streamlit display codes
+# def music_page(cb):
+#     random_all, save_path = music_retrieval()
+#     st.title('Image to Music Retrieval')
+#     st.subheader("Now, we recommend a music list that matches the image!")
+#     st.write('-----')
+#     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
+#     st.markdown(hide_menu, unsafe_allow_html = True)  
+
+#     for i in range(5):
+#         createAudio(str(random_all[i]) + '.mp3')
+
+#     st.write('-----')
+
+#     ## save results
+#     with st.container():
+#         satis_result = st.slider('Do you satisfy with the recommended music?', min_value=0, max_value=100, value=50, step=1)
+#         st.write('-----')
+#         if st.checkbox("Do you want to move to the next page?", key='check4'):
+#             with open(save_path, "r") as json_file:
+#                 results_B = {'Music Satisfaction': satis_result}
+#                 data = json.load(json_file)
+#                 data['submits'][-1].update(results_B)
+
+#             with open(save_path, "w") as save_f:
+#                 json.dump(data, save_f, ensure_ascii=False, indent=4)    
+#                 print("exists, after", data)
+            
+#             st.experimental_set_query_params(path=save_path)
+#             st.button('NEXT', on_click=cb)
+def music_retrieval():
+    save_path = st.experimental_get_query_params()['path'][0]
+    music_tag = TagLoad(save_path) # 수정한 image tag list를 music_tag로 활용함
+    
+    music_list = glob.glob("/nas3/epark/workspace/retreival/music_test_KO/*")
+    music_tag_list = []
+    for i in music_list:
+        a = i.split('/')[-1].split('-')[0]
+        music_tag_list.append(a) # music_tag_list = ['balad_sad', 'ballad_sad_uplifting'...]
+         
+    music_final_tag_list = []
+    for i in music_tag_list:
+        a = i.split('_')
+        music_final_tag_list.append(a) # music_final_tag_list = [['ballad', 'sad'], ['ballad', 'sad', 'uplifting'], ...]
+    
+    
+    all_tags = 0
+    all_tags_list = []
+    two_tags = 0
+    two_tags_list = []
+    one_tags = 0
+    one_tags_list = []
+    for i in music_final_tag_list:
+        set_1 = set(i)
+        set_2 = set(music_tag)
+        if (set_1 & set_2):
+            if len(set_1 & set_2) == 3:
+
+                all_tags_list.append(all_tags) # all_tag_list = [0, 1, 3, 4, 6, ...]
+            elif len(set_1 & set_2) == 2:
+
+                two_tags_list.append(two_tags) # two_tags_list = [2, 5, 9 ,...]
+            else:
+
+                one_tags_list.append(one_tags) # one_tags_list = [7, 8, 10, ...]
+            all_tags = all_tags+1
+            two_tags = two_tags+1
+            one_tags = one_tags+1
+        else:
+            all_tags = all_tags+1
+            two_tags = two_tags+1
+            one_tags = one_tags+1
+
+    if len(all_tags_list) !=0 and len(all_tags_list) >= 5: 
+        random_all = random.choices(all_tags_list, k=5)
+    elif len(all_tags_list) < 5 and len(two_tags_list) >= 5:
+        random_all = random.choices(two_tags_list, k=5)
+    elif len(all_tags_list) < 5 and len(two_tags_list) < 5 and len(one_tags_list) >=5 :
+        random_all = random.choices(one_tags_list, k=5)
+    else:
+        random_all = random.choices(one_tags_list, k=5)
+    
+    filename = []
+    for i in random_all:
+        a = music_list[i].split('/')[-1]
+        filename.append(a)
+        
+    return filename, save_path # retun 5 selected music names 
+
 def createAudio(filename):
     remoteFilePath = sftp.dirRemoteMusicData + '/' + filename
     localFilePath = sftp.dirMusic + '/' + filename
@@ -401,17 +498,16 @@ def createAudio(filename):
     audio_bytes = audio_file.read()
     st.audio(audio_bytes, format='audio/ogg', start_time=0)
 
-## streamlit display codes
 def music_page(cb):
-    random_all, save_path = music_retrieval()
+    filename, save_path = music_retrieval()
     st.title('Image to Music Retrieval')
     st.subheader("Now, we recommend a music list that matches the image!")
     st.write('-----')
     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
-    st.markdown(hide_menu, unsafe_allow_html = True)  
+    st.markdown(hide_menu, unsafe_allow_html = True)
 
     for i in range(5):
-        createAudio(str(random_all[i]) + '.mp3')
+        createAudio(filename[i])
 
     st.write('-----')
 
