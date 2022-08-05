@@ -118,9 +118,7 @@ mood_imgs = [
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/love.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/love_relaxing_sad.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/melodic_party.jpg?raw=true',
-                'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/movie_background_film.jpg?raw=true'
-            ]
-mood_imgs2 = [
+                'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/movie_background_film.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/nature.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/nature_calm_summer.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/mood/nature_summer_film.jpg?raw=true',
@@ -141,9 +139,7 @@ theme_imgs = [
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/dark.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/fast.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/film.jpg?raw=true',
-                'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/holiday_summer_travel.jpg?raw=true'
-            ]
-theme_imgs2 = [
+                'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/holiday_summer_travel.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/movie.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/nature.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/nature_dark.jpg?raw=true',
@@ -190,7 +186,7 @@ def image_page(imgs, cb):
                                         img_style={"margin": "5px", "height": "200px"})  
             
 
-            model_load_state.success('Show Up! Look Around Images!')
+            model_load_state.success("Please click an image you like. We'll recommend music that matches the image.")
             selected_tags = all_tags[clicked]
 
             final_tag = []
@@ -569,7 +565,7 @@ elif st.session_state.active_page == 'Page_1':
 elif st.session_state.active_page == 'Page_2':
     music_page(CB_Page2)
 elif st.session_state.active_page == 'Page_3':
-    image_page(mood_imgs2, CB_Page3)
+    image_page(mood_imgs, CB_Page3)
 elif st.session_state.active_page == 'Page_4':
     music_page(CB_Page4)
 elif st.session_state.active_page == 'Page_5':
@@ -577,7 +573,7 @@ elif st.session_state.active_page == 'Page_5':
 elif st.session_state.active_page == 'Page_6':
     music_page(CB_Page6)
 elif st.session_state.active_page == 'Page_7':
-    image_page(theme_imgs2, CB_Page7)
+    image_page(theme_imgs, CB_Page7)
 elif st.session_state.active_page == 'Page_8':
     music_page(CB_Page8)
 elif st.session_state.active_page == 'Page_9':
