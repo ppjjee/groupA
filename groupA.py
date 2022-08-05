@@ -474,14 +474,14 @@ def music_retrieval():
             two_tags = two_tags+1
             one_tags = one_tags+1
 
-    if len(all_tags_list) !=0 and len(all_tags_list) >= 5: 
-        random_all = random.choices(all_tags_list, k=5)
-    elif len(all_tags_list) < 5 and len(two_tags_list) >= 5:
-        random_all = random.choices(two_tags_list, k=5)
-    elif len(all_tags_list) < 5 and len(two_tags_list) < 5 and len(one_tags_list) >=5 :
-        random_all = random.choices(one_tags_list, k=5)
+    if len(all_tags_list) !=0 and len(all_tags_list) >= 3: 
+        random_all = random.choices(all_tags_list, k=3)
+    elif len(all_tags_list) < 3 and len(two_tags_list) >= 3:
+        random_all = random.choices(two_tags_list, k=3)
+    elif len(all_tags_list) < 3 and len(two_tags_list) < 3 and len(one_tags_list) >=3 :
+        random_all = random.choices(one_tags_list, k=3)
     else:
-        random_all = random.choices(one_tags_list, k=5)
+        random_all = random.choices(one_tags_list, k=3)
     
     filename = []
     for i in random_all:
