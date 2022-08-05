@@ -458,13 +458,16 @@ def music_retrieval():
         set_2 = set(music_tag)
         if (set_1 & set_2):
             if len(set_1 & set_2) == 3:
-
+                print(set_1 & set_2)
+                print('all_tags: ' + str(all_tags))
                 all_tags_list.append(all_tags) # all_tag_list = [0, 1, 3, 4, 6, ...]
             elif len(set_1 & set_2) == 2:
-
+                print(set_1 & set_2)
+                print('two_tags: ' + str(two_tags))
                 two_tags_list.append(two_tags) # two_tags_list = [2, 5, 9 ,...]
             else:
-
+                print(set_1 & set_2)
+                print('one_tags: ' + str(one_tags))
                 one_tags_list.append(one_tags) # one_tags_list = [7, 8, 10, ...]
             all_tags = all_tags+1
             two_tags = two_tags+1
