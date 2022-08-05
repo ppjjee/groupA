@@ -483,8 +483,8 @@ def music_retrieval():
         random_all = random.choices(two_tags_list, k=3)
     elif len(all_tags_list) < 3 and len(two_tags_list) < 3 and len(one_tags_list) >=3 :
         random_all = random.choices(one_tags_list, k=3)
-    else:
-        random_all = random.choices(one_tags_list, k=3)
+    # else:
+    #     random_all = random.choices(one_tags_list, k=3)
     
     filename = []
     for i in random_all:
