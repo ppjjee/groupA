@@ -105,6 +105,7 @@ def get_result_dir():
     path = os.getcwd() + "/results"
     isExists = os.path.exists(path)
     if not isExists:
+        print("result dir does not exist")
         os.makedirs(path)
     print("created result dir: " + path)
     return path
