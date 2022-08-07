@@ -58,8 +58,8 @@ def CB_Page9():
     st.session_state.active_page = 'Page_10'
 
 
-# sftp = SFTP(st.secrets["HOSTNAME"], st.secrets["USERNAME"], st.secrets["PASSWORD"])
-sftp = SFTP("165.132.193.40", "epark", "epark00")
+sftp = SFTP(st.secrets["HOSTNAME"], st.secrets["USERNAME"], st.secrets["PASSWORD"])
+
 def home():
     result_file_name = str(uuid.uuid4()) + ".json"
     save_path = get_result_dir() + "/" + result_file_name
