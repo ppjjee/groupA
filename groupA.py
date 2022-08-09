@@ -26,29 +26,57 @@ if 'active_page' not in st.session_state:
     st.session_state.active_page = 'Home'
     
 
+def save_image_tag_result(save_path, clicked, final_tag):
+    results_A = {'Image': f"{str(int(clicked)+1)}", 'Tag1': final_tag[0][0], 'Tag2': final_tag[1][0], 'Tag3': final_tag[2][0]}
+    if not os.path.exists(save_path):
+        data = {}
+        data['submits'] = []
+        data['submits'].append(results_A)
+        print("no exists", data)
+        with open(save_path, 'w') as save_f:
+            json.dump(data, save_f, ensure_ascii=False, indent=4)
+
+    else:
+        data = {}
+        with open(save_path, "r") as json_file:
+            data = json.load(json_file)
+        data['submits'].append(results_A)
+        print("exists, before", data)
+
+        with open(save_path, "w") as save_f:
+            json.dump(data, save_f, ensure_ascii=False, indent=4)
+            print("exists, after", data)
+
 # callback functions for change page
 def CB_Home():
     st.session_state.active_page = 'Page_1'
 
-def CB_Page1():
+def CB_Page1(save_path, clicked, final_tag):
+    save_image_tag_result(save_path, clicked, final_tag)
+    music_retrieval()
     st.session_state.active_page = 'Page_2'
 
 def CB_Page2():
     st.session_state.active_page = 'Page_3'
 
-def CB_Page3():
+def CB_Page3(save_path, clicked, final_tag):
+    save_image_tag_result(save_path, clicked, final_tag)
+    music_retrieval()
     st.session_state.active_page = 'Page_4'
 
 def CB_Page4():
     st.session_state.active_page = 'Page_5'
 
-def CB_Page5():
+def CB_Page5(save_path, clicked, final_tag):
+    save_image_tag_result(save_path, clicked, final_tag)
     st.session_state.active_page = 'Page_6'
 
 def CB_Page6():
     st.session_state.active_page = 'Page_7'
 
-def CB_Page7():
+def CB_Page7(save_path, clicked, final_tag):
+    save_image_tag_result(save_path, clicked, final_tag)
+    music_retrieval()
     st.session_state.active_page = 'Page_8'
 
 def CB_Page8():
@@ -105,7 +133,6 @@ def get_result_dir():
     path = os.getcwd() + "/results"
     isExists = os.path.exists(path)
     if not isExists:
-        print("result dir does not exist")
         os.makedirs(path)
     print("created result dir: " + path)
     return path
@@ -148,6 +175,7 @@ theme_imgs = [
             ]
 theme_imgs2 = [
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/children.jpg?raw=true',
+                'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/commercial_advertising_corporate.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/film.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/game.jpg?raw=true',
                 'https://github.com/ppjjee/image_music_retrieval_test/blob/main/theme/love.jpg?raw=true',
@@ -163,9 +191,10 @@ def image_page(imgs, cb):
     st.title('Image to Music Retrieval')
     st.text("✔️ Please select an image! We recommend music that matches the selected image.")
     st.text("✔️ After selecting an image, please wait for a while until the next process.")
-    st.markdown(hide_menu, unsafe_allow_html = True)  
+    st.markdown(hide_menu, unsafe_allow_html = True)
 
     save_path = st.experimental_get_query_params()['path'][0]
+
     # show imgs to be selected    
     selection = st.container()
     with selection:
@@ -190,114 +219,39 @@ def image_page(imgs, cb):
                                         div_style={"display": "flex", "justify-content": "center", "flex-wrap": "wrap"},
                                         img_style={"margin": "5px", "height": "200px"})  
             
-
-            model_load_state.success("Please click an image you like. We'll recommend music that matches the image.")
-            selected_tags = all_tags[clicked]
-
-            final_tag = []
-            for tag in selected_tags:
-                tup = (tag, 0)
-                final_tag.append(tup)
+            model_load_state.success('After clicking an image you like, scroll down and check the keywords below.')
             
                 
             # if some image is clicked,
-            if clicked >= 0:
-                model_load_state.info(f"**Keywords of Image {str(int(clicked)+1)} Are Below.**")
-                # show final tags of selected image
-                show_tags = st.container()
-                print(show_tags)
-                with show_tags:
-                    if len(final_tag) == 3:
-                        st.write('-----')
-                        model_load_state.info("**Scroll Down and Press the Button**")                  
-                        # save results
-                        if st.checkbox("Do you want to move to the next page?", key='check1'):
-                            results_A = {'Image': f"{str(int(clicked)+1)}", 'Tag1': final_tag[0][0], 'Tag2': final_tag[1][0], 'Tag3': final_tag[2][0]}
-                            if not os.path.exists(save_path):
-                                data = {}
-                                data['submits'] = []
-                                data['submits'].append(results_A)
-                                print("no exists", data)
-                                with open(save_path, 'w') as save_f:
-                                    json.dump(data, save_f, ensure_ascii=False, indent=4)
+            if clicked > -1:
+                model_load_state.info(f"**Image {str(int(clicked)+1)} is clicked. Scroll Down to Below 🖱️**")
+                selected_tags = all_tags[clicked]
+                final_tag = []
+                for tag in selected_tags:
+                    tup = (tag, 0)
+                    final_tag.append(tup)
 
-                            else:
-                                data = {}
-                                with open(save_path, "r") as json_file:
-                                    data = json.load(json_file)
-                                data['submits'].append(results_A)
-                                print("exists, before", data)
+                if len(final_tag) == 2:
+                    final_tag.append(('-', 0))
+                elif len(final_tag) == 1:
+                    final_tag.append(('-', 0))
+                    final_tag.append(('-', 0))
 
-                                with open(save_path, "w") as save_f:
-                                    json.dump(data, save_f, ensure_ascii=False, indent=4)
-                                    print("exists, after", data)
-                    
-                    elif len(final_tag) == 2:
-                        st.write('-----')
-                        model_load_state.info("**Scroll Down and Press the Button**")                  
-                        # save results
-                        if st.checkbox("Do you want to move to the next page?", key='check2'):
-                            if not os.path.exists(save_path):
-                                results_A = {'Image': f"{str(int(clicked)+1)}", 'Tag1': final_tag[0][0], 'Tag2': final_tag[1][0], 'Tag3': '-'}
-                                data = {}
-                                data['submits'] = []
-                                data['submits'].append(results_A)
-                                print("no exists", data)
-                                with open(save_path, 'w') as save_f:
-                                    json.dump(data, save_f, ensure_ascii=False, indent=4)
-
-                            else:
-                                data = {}
-                                with open(save_path, "r") as json_file:
-                                    data = json.load(json_file)
-                                data['submits'].append(results_A)
-                                print("exists, before", data)
-
-                                with open(save_path, "w") as save_f:
-                                    json.dump(data, save_f, ensure_ascii=False, indent=4)
-                                    print("exists, after", data)
-                            
-                            
-                    else:
-                        st.write('-----')                
-                        model_load_state.info("**Scroll Down and Press the Button**")                  
-                        # save results
-                        if st.checkbox("Do you want to move to the next page?", key='check3'):
-                            results_A = {'Image': f"{str(int(clicked)+1)}", 'Tag1': final_tag[0][0], 'Tag2': '-', 'Tag3': '-'}
-                            if not os.path.exists(save_path):
-                                data = {}
-                                data['submits'] = []
-                                data['submits'].append(results_A)
-                                print("no exists", data)
-                                with open(save_path, 'w') as save_f:
-                                    json.dump(data, save_f, ensure_ascii=False, indent=4)
-
-                            else:
-                                data = {}
-                                with open(save_path, "r") as json_file:
-                                    data = json.load(json_file)
-                                data['submits'].append(results_A)
-                                print("exists, before", data)
-
-                                with open(save_path, "w") as save_f:
-                                    json.dump(data, save_f, ensure_ascii=False, indent=4)
-                                    print("exists, after", data)
-                            
-                    st.experimental_set_query_params(path=save_path)                               
-                    st.button('NEXT', on_click=cb)
+                # show selected image and save the results of final tags 
+                with st.container():
+                    st.write('-----')
+                    st.text("👉 If you like the image selected, click NEXT button directly!")
+                    st.experimental_set_query_params(path=save_path)
+                    st.button('NEXT', on_click=cb, args=(save_path, clicked, final_tag))
 
             else:
                 model_load_state.info(f"**There is no image selected. Please select one image.**")
                 
-                
-                
-            
-
-        except:
+        except Exception as e:
+            print("Oops!", e.__class__, "occurred.")
             message_container = st.empty() 
             message = message_container.write('👉 Please, wait. Loading... 👀')
             if message != '':
-                time.sleep(23)
                 message_container.empty()
 
 
@@ -340,183 +294,86 @@ def TagLoad(path):
 
 
 
-# def music_retrieval():
-#     remoteFilePath = '/nas2/epark/mtg-jamendo-dataset/data/autotagging_moodtheme.tsv'
-#     localFilePath = 'autotagging_moodtheme.tsv'
-#     sftp.download(remoteFilePath, localFilePath)
-#     tracks, tags, extra = commons.read_file(localFilePath)
-
-#     find_tag_list = []
-#     save_path = st.experimental_get_query_params()['path'][0]
-#     print("save path: " + save_path)
-#     music_tag = TagLoad(save_path)
-#     for i in music_tag:
-#         p = tags['mood/theme'][i]
-#         q = list(p)
-#         find_tag_list.extend(q)
-#         print('find_tag_list', find_tag_list)
-        
-#     if len(find_tag_list) == 3:
-#         a, b, c = find_tag_list
-#         elements_in_all = list(set.intersection(*map(set, [a, b, c])))
-#         elements_in_two = list(set.intersection(*map(set, [a, b])))
-#         elements_in_two_2nd = list(set.intersection(*map(set, [b, c])))
-#         elements_in_two_3rd = list(set.intersection(*map(set, [a, b])))
-#         elements_in_one = a
-        
-#         if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
-#             random_all = random.choices(elements_in_all, k=5)
-#         elif len(elements_in_all) == 0 and len(elements_in_two) != 0  and len(elements_in_two) >= 5:
-#             random_all = random.choices(elements_in_two, k=5)
-#         elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) >= 5:
-#             random_all = random.choices(elements_in_two_2nd, k=5)
-#         elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) ==0 and len(elements_in_two_3rd) >=5:
-#             random_all = random.choices(elements_in_two_3rd, k=5)
-#         else:
-#             random_all = random.choices(elements_in_one, k=5)
-
-        
-#     elif len(find_tag_list) == 2:
-#         a, b = find_tag_list
-#         elements_in_all = list(set.intersection(*map(set, [a, b])))
-#         elements_in_one = a
-#         elements_in_one_2nd = b
-        
-#         if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
-#             random_all = random.choices(elements_in_all, k=5)
-#         elif len(elements_in_all) == 0 and len(elements_in_one) >= 5:
-#             random_all = random.choices(elements_in_one_2nd, k=5)
-#         else: 
-#             random_all = random.choices(elements_in_one, k=5)
-
-        
-#     else:
-#         a = find_tag_list
-#         elements_in_all = a
-#         random_all = random.choices(elements_in_all, k=5)
-#         music_tags = st.container()
-
-#     return random_all, save_path
-    
-# def createAudio(filename):
-#     remoteFilePath = sftp.dirRemoteMusicData + '/' + filename
-#     localFilePath = sftp.dirMusic + '/' + filename
-#     sftp.download(remoteFilePath, localFilePath)
-#     audio_file = open(localFilePath, 'rb')
-#     audio_bytes = audio_file.read()
-#     st.audio(audio_bytes, format='audio/ogg', start_time=0)
-
-# ## streamlit display codes
-# def music_page(cb):
-#     random_all, save_path = music_retrieval()
-#     st.title('Image to Music Retrieval')
-#     st.subheader("Now, we recommend a music list that matches the image!")
-#     st.write('-----')
-#     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
-#     st.markdown(hide_menu, unsafe_allow_html = True)  
-
-#     for i in range(5):
-#         createAudio(str(random_all[i]) + '.mp3')
-
-#     st.write('-----')
-
-#     ## save results
-#     with st.container():
-#         satis_result = st.slider('Do you satisfy with the recommended music?', min_value=0, max_value=100, value=50, step=1)
-#         st.write('-----')
-#         if st.checkbox("Do you want to move to the next page?", key='check4'):
-#             with open(save_path, "r") as json_file:
-#                 results_B = {'Music Satisfaction': satis_result}
-#                 data = json.load(json_file)
-#                 data['submits'][-1].update(results_B)
-
-#             with open(save_path, "w") as save_f:
-#                 json.dump(data, save_f, ensure_ascii=False, indent=4)    
-#                 print("exists, after", data)
-            
-#             st.experimental_set_query_params(path=save_path)
-#             st.button('NEXT', on_click=cb)
 def music_retrieval():
+    remoteFilePath = '/nas2/epark/mtg-jamendo-dataset/data/autotagging_moodtheme.tsv'
+    localFilePath = 'autotagging_moodtheme.tsv'
+    sftp.download(remoteFilePath, localFilePath)
+    tracks, tags, extra = commons.read_file(localFilePath)
+
+    find_tag_list = []
     save_path = st.experimental_get_query_params()['path'][0]
-    music_tag = TagLoad(save_path) # 수정한 image tag list를 music_tag로 활용함
-    
-    music_list = glob.glob("/nas3/epark/workspace/retreival/music_test/*")
-    music_tag_list = []
-    for i in music_list:
-        a = i.split('/')[-1].split('-')[0]
-        music_tag_list.append(a) # music_tag_list = ['balad_sad', 'ballad_sad_uplifting'...]
-         
-    music_final_tag_list = []
-    for i in music_tag_list:
-        a = i.split('_')
-        music_final_tag_list.append(a) # music_final_tag_list = [['ballad', 'sad'], ['ballad', 'sad', 'uplifting'], ...]
-    
-    
-    all_tags = 0
-    all_tags_list = []
-    two_tags = 0
-    two_tags_list = []
-    one_tags = 0
-    one_tags_list = []
-    for i in music_final_tag_list:
-        set_1 = set(i)
-        set_2 = set(music_tag)
-        if (set_1 & set_2):
-            if len(set_1 & set_2) == 3:
-                print(set_1 & set_2)
-                print('all_tags: ' + str(all_tags))
-                all_tags_list.append(all_tags) # all_tag_list = [0, 1, 3, 4, 6, ...]
-            elif len(set_1 & set_2) == 2:
-                print(set_1 & set_2)
-                print('two_tags: ' + str(two_tags))
-                two_tags_list.append(two_tags) # two_tags_list = [2, 5, 9 ,...]
-            else:
-                print(set_1 & set_2)
-                print('one_tags: ' + str(one_tags))
-                one_tags_list.append(one_tags) # one_tags_list = [7, 8, 10, ...]
-            all_tags = all_tags+1
-            two_tags = two_tags+1
-            one_tags = one_tags+1
-        else:
-            all_tags = all_tags+1
-            two_tags = two_tags+1
-            one_tags = one_tags+1
-
-    if len(all_tags_list) !=0 and len(all_tags_list) >= 3: 
-        random_all = random.choices(all_tags_list, k=3)
-    elif len(all_tags_list) < 3 and len(two_tags_list) >= 3:
-        random_all = random.choices(two_tags_list, k=3)
-    elif len(all_tags_list) < 3 and len(two_tags_list) < 3 and len(one_tags_list) >=3 :
-        random_all = random.choices(one_tags_list, k=3)
-    # else:
-    #     random_all = random.choices(one_tags_list, k=3)
-    
-    filename = []
-    for i in random_all:
-        a = music_list[i].split('/')[-1]
-        filename.append(a)
+    print("save path: " + save_path)
+    music_tag = TagLoad(save_path)
+    for i in music_tag:
+        p = tags['mood/theme'][i]
+        q = list(p)
+        find_tag_list.extend(q)
+        print('find_tag_list', find_tag_list)
         
-    return filename, save_path # retun 5 selected music names 
+    if len(find_tag_list) == 3:
+        a, b, c = find_tag_list
+        elements_in_all = list(set.intersection(*map(set, [a, b, c])))
+        elements_in_two = list(set.intersection(*map(set, [a, b])))
+        elements_in_two_2nd = list(set.intersection(*map(set, [b, c])))
+        elements_in_two_3rd = list(set.intersection(*map(set, [a, b])))
+        elements_in_one = a
+        
+        if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
+            random_all = random.choices(elements_in_all, k=5)
+        elif len(elements_in_all) == 0 and len(elements_in_two) != 0  and len(elements_in_two) >= 5:
+            random_all = random.choices(elements_in_two, k=5)
+        elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) >= 5:
+            random_all = random.choices(elements_in_two_2nd, k=5)
+        elif len(elements_in_all) ==0 and len(elements_in_two) ==0 and len(elements_in_two_2nd) ==0 and len(elements_in_two_3rd) >=5:
+            random_all = random.choices(elements_in_two_3rd, k=5)
+        else:
+            random_all = random.choices(elements_in_one, k=5)
 
+        
+    elif len(find_tag_list) == 2:
+        a, b = find_tag_list
+        elements_in_all = list(set.intersection(*map(set, [a, b])))
+        elements_in_one = a
+        elements_in_one_2nd = b
+        
+        if len(elements_in_all) !=0 and len(elements_in_all) >= 5:
+            random_all = random.choices(elements_in_all, k=5)
+        elif len(elements_in_all) == 0 and len(elements_in_one) >= 5:
+            random_all = random.choices(elements_in_one_2nd, k=5)
+        else: 
+            random_all = random.choices(elements_in_one, k=5)
+        
+    else:
+        a = find_tag_list
+        elements_in_all = a
+        random_all = random.choices(elements_in_all, k=5)
+
+    st.session_state['music_random'] = random_all
+    for r in random_all:
+        print(r) # for debug
+        
+
+    
 def createAudio(filename):
     remoteFilePath = sftp.dirRemoteMusicData + '/' + filename
     localFilePath = sftp.dirMusic + '/' + filename
     sftp.download(remoteFilePath, localFilePath)
-    print(remoteFilePath)
     audio_file = open(localFilePath, 'rb')
     audio_bytes = audio_file.read()
     st.audio(audio_bytes, format='audio/ogg', start_time=0)
 
+## streamlit display codes
 def music_page(cb):
-    filename, save_path = music_retrieval()
     st.title('Image to Music Retrieval')
     st.subheader("Now, we recommend a music list that matches the image!")
     st.write('-----')
     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
     st.markdown(hide_menu, unsafe_allow_html = True)
 
-    for i in range(3):
-        createAudio(filename[i])
+    random_all = st.session_state['music_random']
+    for r in random_all:
+        print(r) # for debug
+        createAudio(str(r) + '.mp3')
 
     st.write('-----')
 
@@ -524,18 +381,19 @@ def music_page(cb):
     with st.container():
         satis_result = st.slider('Do you think the retrieved music represents the selected image well?', min_value=0, max_value=100, value=50, step=1)
         st.write('-----')
-        if st.checkbox("Do you want to move to the next page?", key='check4'):
-            with open(save_path, "r") as json_file:
-                results_B = {'Music Satisfaction': satis_result}
-                data = json.load(json_file)
-                data['submits'][-1].update(results_B)
+    
+        save_path = st.experimental_get_query_params()['path'][0]
+        with open(save_path, "r") as json_file:
+            results_A = {'Music Satisfaction': satis_result}
+            data = json.load(json_file)
+            data['submits'][-1].update(results_A)
 
-            with open(save_path, "w") as save_f:
-                json.dump(data, save_f, ensure_ascii=False, indent=4)    
-                print("exists, after", data)
-            
-            st.experimental_set_query_params(path=save_path)
-            st.button('NEXT', on_click=cb)
+        with open(save_path, "w") as save_f:
+            json.dump(data, save_f, ensure_ascii=False, indent=4)    
+            print("exists, after", data)
+        
+        st.experimental_set_query_params(path=save_path)
+        st.button('NEXT', on_click=cb)
 
 
 ## ------------------ for Survey ------------------------ 
@@ -543,9 +401,9 @@ def survey_page():
     save_path = st.experimental_get_query_params()['path'][0]
     print("path 5: " + save_path)
     st.title('Image to Music Retrieval')
-    st.subheader("please respond to the questionnaire consisting of 4 sections.")
+    st.subheader("This is the last step! Please answer the questionnaire below.")
     st.subheader("💪 You are almost there! 💪")
-    st.markdown(hide_menu, unsafe_allow_html = True)  
+    st.markdown(hide_menu, unsafe_allow_html = True)
 
     survey = st.container()
     with survey:
@@ -609,7 +467,7 @@ def survey_page():
             ('Strongly agree', 'Agree', 'Neutral', 'Disagree', 'Strongly disagree'))
         st.write('-----')
         
-        
+
         valence1 = st.radio(
             "After using this image music retrieval system, I feel that I have had a good experience.",
             ('Strongly agree', 'Agree', 'Neutral', 'Disagree', 'Strongly disagree'))
@@ -626,7 +484,7 @@ def survey_page():
 
         ## save results
         if st.checkbox("Do you want to move to the next page?", key='fin'):
-            results_B = {'gender': gender, 'age': age, 'education': education, 'ethnicity': ethnicity,
+            results_A = {'gender': gender, 'age': age, 'education': education, 'ethnicity': ethnicity,
              'satisfaction1': satisfaction1, 
              'satisfaction2': satisfaction2, 
              'satisfaction3': satisfaction3, 
@@ -643,7 +501,7 @@ def survey_page():
             with open(save_path, "r") as json_file:
                 data = {}
                 data = json.load(json_file)
-            data['submits'].append(results_B)
+            data['submits'].append(results_A)
 
             with open(save_path, "w") as save_f:
                 json.dump(data, save_f, ensure_ascii=False, indent=4)
@@ -659,7 +517,7 @@ def survey_page():
 def final_page():
     st.balloons()
     st.title("Thank you for your participation!")
-    st.markdown(hide_menu, unsafe_allow_html = True)         
+    st.markdown(hide_menu, unsafe_allow_html = True)       
 
                                                 
 # run the active page
