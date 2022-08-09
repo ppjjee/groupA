@@ -240,7 +240,7 @@ def image_page(imgs, cb):
                 # show selected image and save the results of final tags 
                 with st.container():
                     st.write('-----')
-                    st.text("👉 If you like the image selected, click NEXT button directly!")
+                    st.text("👉 Please click the NEXT button below.")
                     st.experimental_set_query_params(path=save_path)
                     st.button('NEXT', on_click=cb, args=(save_path, clicked, final_tag))
 
