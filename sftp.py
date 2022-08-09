@@ -5,7 +5,7 @@ import os
 class SFTP():
 
     def __init__(self, hostname, username, password):
-        self.dirRemoteMusicData = "/nas3/epark/workspace/retreival/music_test_KO"
+        self.dirRemoteMusicData = "/nas3/epark/workspace/retreival/music_data/mp3"
         self.dirRemoteSurveyResult = "/nas3/epark/workspace/retreival/music_data/survey_groupA"
         self.dirMusic = "music_data"
         
