@@ -367,8 +367,7 @@ def music_page(cb):
     st.title('Image to Music Retrieval')
     st.subheader("Now, we recommend a music list that matches the image!")
     st.write('-----')
-    st.text("🎧 We found music that matches the selected image.")
-    st. text("🎧 Please enjoy the music! 🎧")
+    st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
     st.markdown(hide_menu, unsafe_allow_html = True)
 
     random_all = st.session_state['music_random']
