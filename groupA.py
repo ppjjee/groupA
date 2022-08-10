@@ -10,6 +10,7 @@ from collections import Counter
 import uuid
 from itertools import chain
 from sftp import SFTP
+from PIL import Image
 hide_menu = """
 <style>
 #MainMenu {
@@ -65,6 +66,9 @@ def save_music_survey_result(save_path,satis_result):
 
 # callback functions for change page
 def CB_Home():
+    st.session_state.active_page = 'Page_0'
+
+def CB_Page0():
     st.session_state.active_page = 'Page_1'
 
 def CB_Page1(save_path, clicked, final_tag):
@@ -130,7 +134,7 @@ def home():
         sh2 = st.container()
         with sh2:
             subheader2 = st.subheader('What you are going to do 🧪')
-            st.text("In this experiment, we recommend musics that matches an image.") 
+            st.text("In this experiment, we recommend music that matches an image.") 
             st.text("We give you several kinds of image choices.")
             st.text("Select an image you like the most, then keywords will show up that match the selected image (up to 3).")
             st.text("If you are not satisfied with the keywords, you can change them from the selection.")
@@ -147,7 +151,14 @@ def home():
 
         st.experimental_set_query_params(path=save_path)
         st.button('Agree, Start', on_click=CB_Home)
- 
+ ## ------------------ Instruction warning ----------------------------
+def note():
+    st.markdown(hide_menu, unsafe_allow_html = True)
+    image = Image.open('note.png')
+    st.image(image, caption='Caution', width = 1000)
+
+    st.button('Confirmed', on_click=CB_Page0)
+
  ## ------------------ for Mood Image Retrieval ------------------------ 
 def get_result_dir():
     path = os.getcwd() + "/results"
@@ -235,7 +246,7 @@ def image_page(imgs, cb):
 
             # display images that can be clicked on using 'clickable_images' func
             clicked = clickable_images(paths=imgs, 
-                                        titles=[f"Image {str(i)}" for i in range(1, len(imgs)+1)],
+                                        titles=[f"Image #{str(i)}" for i in range(1, len(imgs)+1)],
                                         div_style={"display": "flex", "justify-content": "center", "flex-wrap": "wrap"},
                                         img_style={"margin": "5px", "height": "200px"})  
             
@@ -244,7 +255,7 @@ def image_page(imgs, cb):
                 
             # if some image is clicked,
             if clicked > -1:
-                model_load_state.info(f"**Image {str(int(clicked)+1)} is clicked. Scroll Down to Below 🖱️**")
+                model_load_state.warning(f"**Image #{str(int(clicked)+1)} is clicked. Scroll Down to Below 🖱️**")
                 selected_tags = all_tags[clicked]
                 final_tag = []
                 for tag in selected_tags:
@@ -260,6 +271,7 @@ def image_page(imgs, cb):
                 # show selected image and save the results of final tags 
                 with st.container():
                     st.write('-----')
+                    st.warning(f"**Image #{str(int(clicked)+1)} is clicked.**")
                     st.text("👉 Please click the NEXT button below.")
                     st.experimental_set_query_params(path=save_path)
                     st.button('NEXT', on_click=cb, args=(save_path, clicked, final_tag))
@@ -386,6 +398,8 @@ def createAudio(filename):
 def music_page(cb):
     st.title('Image to Music Retrieval')
     st.subheader("Now, we recommend a music list that matches the image!")
+    st.text('The music recommended in this study is a copyright-free sound sources provided for research purposes.')
+    st.text('Therefore, we inform you that it may be different from the latest music you are familiar with.')
     st.write('-----')
     st.text("🎧 Please enjoy the music and answer the questions below. 🎧")
     st.markdown(hide_menu, unsafe_allow_html = True)
@@ -401,7 +415,9 @@ def music_page(cb):
 
     ## save results
     with st.container():
-        satis_result = st.slider('Do you think the retrieved music represents the selected image well?', min_value=0, max_value=100, value=50, step=1)
+        # satis_result = st.slider('Do you think the retrieved music represents the selected image well?', min_value=0, max_value=100, value=50, step=1)
+        satis_result = st.select_slider('Overall, do you think the retrieved music represents the selected image well?', options=['Strongly disagree', 'Disagree', 'Somewhat disagree', 'Neither agree nor disagree', 'Somewhat agree', 'Agree', 'Strongly agree'], value='Neither agree nor disagree')
+        st.text('Note: Please evaluate how well the music reflects the mood of the image, not the satisfaction rating on the music.')
         st.write('-----')
     
 
@@ -536,6 +552,8 @@ def final_page():
 # run the active page
 if st.session_state.active_page == 'Home':
     home()
+elif st.session_state.active_page == 'Page_0':
+    note()
 elif st.session_state.active_page == 'Page_1':
     image_page(mood_imgs, CB_Page1)
 elif st.session_state.active_page == 'Page_2':
