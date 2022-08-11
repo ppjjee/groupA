@@ -138,9 +138,9 @@ def home():
             subheader2 = st.subheader('What you are going to do 🧪')
             st.text("In this experiment, we recommend music that matches an image.") 
             st.text("We give you several kinds of image choices.")
-            st.text("Select an image you like the most, then keywords will show up that match the selected image (up to 3).")
-            st.text("If you are not satisfied with the keywords, you can change them from the selection.")
-            st.text("When keyword selection is complete, we will automatically recommend musics that match the image.")
+            st.text("Select an image you like the most.")
+            # st.text("If you are not satisfied with the keywords, you can change them from the selection.")
+            st.text("When image selection is complete, we will automatically recommend music that matchs the image.")
             st.write('-----')
 
 
