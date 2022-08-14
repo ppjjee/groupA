@@ -27,8 +27,8 @@ if 'active_page' not in st.session_state:
     st.session_state.active_page = 'Home'
     
 
-def save_image_tag_result(save_path, clicked, final_tag):
-    results_A = {'Image': f"{str(int(clicked)+1)}", 'Tag1': final_tag[0][0], 'Tag2': final_tag[1][0], 'Tag3': final_tag[2][0]}
+def save_image_tag_result(save_path, clicked, selected_tags):
+    results_A = {'Image': f"{str(int(clicked)+1)}", 'Tag1': selected_tags[0], 'Tag2': selected_tags[1], 'Tag3': selected_tags[2]}
     if not os.path.exists(save_path):
         data = {}
         data['submits'] = []
@@ -71,8 +71,8 @@ def CB_Home():
 def CB_Page0():
     st.session_state.active_page = 'Page_1'
 
-def CB_Page1(save_path, clicked, final_tag):
-    save_image_tag_result(save_path, clicked, final_tag)
+def CB_Page1(save_path, clicked, selected_tags):
+    save_image_tag_result(save_path, clicked, selected_tags)
     music_retrieval()
     st.session_state.active_page = 'Page_2'
 
@@ -80,8 +80,8 @@ def CB_Page2(save_path,satis_result):
     save_music_survey_result(save_path,satis_result)
     st.session_state.active_page = 'Page_3'
 
-def CB_Page3(save_path, clicked, final_tag):
-    save_image_tag_result(save_path, clicked, final_tag)
+def CB_Page3(save_path, clicked, selected_tags):
+    save_image_tag_result(save_path, clicked, selected_tags)
     music_retrieval()
     st.session_state.active_page = 'Page_4'
 
@@ -89,16 +89,16 @@ def CB_Page4(save_path,satis_result):
     save_music_survey_result(save_path,satis_result)
     st.session_state.active_page = 'Page_5'
 
-def CB_Page5(save_path, clicked, final_tag):
-    save_image_tag_result(save_path, clicked, final_tag)
+def CB_Page5(save_path, clicked, selected_tags):
+    save_image_tag_result(save_path, clicked, selected_tags)
     st.session_state.active_page = 'Page_6'
 
 def CB_Page6(save_path,satis_result):
     save_music_survey_result(save_path,satis_result)
     st.session_state.active_page = 'Page_7'
 
-def CB_Page7(save_path, clicked, final_tag):
-    save_image_tag_result(save_path, clicked, final_tag)
+def CB_Page7(save_path, clicked, selected_tags):
+    save_image_tag_result(save_path, clicked, selected_tags)
     music_retrieval()
     st.session_state.active_page = 'Page_8'
 
@@ -259,16 +259,12 @@ def image_page(imgs, cb):
             if clicked > -1:
                 model_load_state.warning(f"**Image #{str(int(clicked)+1)} is clicked. Scroll Down to Below 🖱️**")
                 selected_tags = all_tags[clicked]
-                final_tag = []
-                for tag in selected_tags:
-                    tup = (tag, 0)
-                    final_tag.append(tup)
 
-                if len(final_tag) == 2:
-                    final_tag.append(('-', 0))
-                elif len(final_tag) == 1:
-                    final_tag.append(('-', 0))
-                    final_tag.append(('-', 0))
+                if len(selected_tags) == 2:
+                    selected_tags.append('-')
+                elif len(selected_tags) == 1:
+                    selected_tags.append('-')
+                    selected_tags.append('-')
 
                 # show selected image and save the results of final tags 
                 with st.container():
@@ -276,7 +272,7 @@ def image_page(imgs, cb):
                     st.warning(f"**Image #{str(int(clicked)+1)} is clicked.**")
                     st.text("👉 Please click the NEXT button below.")
                     st.experimental_set_query_params(path=save_path)
-                    st.button('NEXT', on_click=cb, args=(save_path, clicked, final_tag))
+                    st.button('NEXT', on_click=cb, args=(save_path, clicked, selected_tags))
 
             else:
                 model_load_state.info(f"**There is no image selected. Please select one image.**")
